@@ -26,16 +26,16 @@ Runs all the tests
 fastlane android signed_apk
 ```
 Create a signed version of the app
-### android beta
-```
-fastlane android beta
-```
-Submit a new Beta Build to Crashlytics Beta
 ### android fabric
 ```
 fastlane android fabric
 ```
 Upload a signed .apk to Fabric Beta service.
+### android beta
+```
+fastlane android beta
+```
+Submit a new Beta Build to Crashlytics Beta
 ### android deploy
 ```
 fastlane android deploy

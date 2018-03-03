@@ -32,6 +32,8 @@ platform :android do
       print_command: false,
       # Gradle properties
       properties: {
+        "android.injected.signing.store.file" => "fastlane/masterplan_keystore.jks",
+        "android.injected.signing.store.password" => ENV['KEY_PASSWORD'],
         "android.injected.signing.key.alias" => ENV['KEY_ALIAS'],
         "android.injected.signing.key.password" => ENV['KEY_PASSWORD'],
         "versionCode" => versionCode,
