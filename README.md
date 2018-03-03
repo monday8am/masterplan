@@ -1,0 +1,2 @@
+# masterplan
+Android test application
