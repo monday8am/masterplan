@@ -21,6 +21,11 @@ or alternatively using `brew cask install fastlane`
 fastlane android test
 ```
 Runs all the tests
+### android signed_apk
+```
+fastlane android signed_apk
+```
+Create a signed version of the app
 ### android beta
 ```
 fastlane android beta

@@ -17,6 +17,32 @@ platform :android do
     gradle(task: "test")
   end
 
+  desc "Create a signed version of the app"
+  lane :signed_apk do
+
+    # get version and build number from git
+    # https://blog.uncommon.is/using-git-to-generate-versionname-and-versioncode-for-android-apps-aaa9fc2c96af
+    versionName = sh("git describe --dirty").gsub(/\s+/, "")
+    versionCode = sh("git rev-list --first-parent --count origin/master").gsub(/\s+/, "").to_i
+
+    # build the release variant
+    gradle(
+      task: "assemble",
+      build_type: "Release",
+      print_command: false,
+      # Gradle properties
+      properties: {
+        "android.injected.signing.key.alias" => ENV['KEY_ALIAS'],
+        "android.injected.signing.key.password" => ENV['KEY_PASSWORD'],
+        "versionCode" => versionCode,
+        "versionName" => versionName
+      }    
+    )
+
+    puts "Created signed apk. VersionName: #{versionName}. VersionCode: #{versionCode}"
+
+  end     
+
   desc "Submit a new Beta Build to Crashlytics Beta"
   lane :beta do
     gradle(task: "clean assembleRelease")
