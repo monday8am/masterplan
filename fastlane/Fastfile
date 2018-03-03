@@ -63,6 +63,66 @@ platform :android do
     # You can also use other beta testing services here
   end
 
+  desc "Release a new release version and publish it"
+  lane :release do |lane|
+
+    # ensure clean master branch
+    ensure_git_branch
+    ensure_git_status_clean
+
+    type = lane[:bump]
+    old = last_git_tag
+    newVersion = old
+    old[0] = ''
+    oldArr = old.split('.').map{|v| v.to_i}
+
+    comments = changelog_from_git_commits(
+      between: [last_git_tag, "HEAD"],
+      pretty: "- %s",
+      date_format: "short",
+      match_lightweight_tag: false, 
+      merge_commit_filtering: "exclude_merges" 
+    )
+
+    if type == "patch"
+      newVersion = "#{oldArr[0]}.#{oldArr[1]}.#{oldArr[2] + 1}"
+    elsif type == "minor"
+      newVersion = "#{oldArr[0]}.#{oldArr[1] + 1}.0"
+    elsif type == "major"
+      newVersion = "#{oldArr[0] + 1}.0.0"
+    end
+
+    if newVersion == old
+      UI.user_error!("Wrong release bump parameter. Enter: patch | minor | major")
+    end  
+
+    # create local tag
+    add_git_tag(
+      message: comments,
+      tag: "v#{newVersion}",
+      prefix: "v",
+      build_number: newVersion
+    )
+
+    # create signed apk
+    signed_apk
+
+    # publish release into Github
+    github_release = set_github_release(
+      api_token: ENV["GITHUB_TOKEN"],
+      repository_name: "monday8am/masterplan",
+      name: "#{type.capitalize} version v#{newVersion}",
+      tag_name: "v#{newVersion}",
+      description: comments,
+      commitish: "master",
+      upload_assets: [lane_context[SharedValues::GRADLE_APK_OUTPUT_PATH]]
+    )
+
+    # publis release into Fabric Beta
+    fabric
+
+  end  
+
   desc "Deploy a new version to the Google Play"
   lane :deploy do
     gradle(task: "clean assembleRelease")
