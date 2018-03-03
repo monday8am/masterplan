@@ -43,15 +43,6 @@ platform :android do
 
   end     
 
-  desc "Submit a new Beta Build to Crashlytics Beta"
-  lane :beta do
-    gradle(task: "clean assembleRelease")
-    fabric
-  
-    # sh "your_script.sh"
-    # You can also use other beta testing services here
-  end
-
   desc "Upload a signed .apk to Fabric Beta service."
   lane :fabric do
     # upload to Beta by Crashlytics
@@ -59,6 +50,15 @@ platform :android do
       api_token: ENV['FABRIC_API_TOKEN'],
       build_secret: ENV['FABRIC_BUILD_SECRET']
     )
+  end
+
+  desc "Submit a new Beta Build to Crashlytics Beta"
+  lane :beta do
+    signed_apk
+    fabric
+  
+    # sh "your_script.sh"
+    # You can also use other beta testing services here
   end
 
   desc "Deploy a new version to the Google Play"
