@@ -64,6 +64,7 @@ platform :android do
   end
 
   desc "Release a new release version and publish it"
+  desc "passing a bump parameter"
   lane :release do |lane|
 
     # ensure clean master branch

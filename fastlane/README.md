@@ -36,6 +36,11 @@ Upload a signed .apk to Fabric Beta service.
 fastlane android beta
 ```
 Submit a new Beta Build to Crashlytics Beta
+### android release
+```
+fastlane android release
+```
+Release a new release version and publish it
 ### android deploy
 ```
 fastlane android deploy
